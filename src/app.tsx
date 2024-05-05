@@ -2,7 +2,7 @@ const { queryNpvArtist } = Spicetify.GraphQL.Definitions;
 
 const badLanguages = ["ru"];
 const badLetters = ["э", "ё", "ъ", "ы"];
-const badWords = ["россия", "россии", "русский", "русская"];
+const badWords = ["россия", "россии", "русский", "русская", "russia"];
 
 function hasBadLetter(text: string) {
   if (!text) return false;
