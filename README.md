@@ -21,5 +21,5 @@ npm run build
 spicetify apply
 ```
 
-#### Contributing
+### Contributing
 [https://spicetify.app/docs/development/spicetify-creator](https://spicetify.app/docs/development/spicetify-creator)
