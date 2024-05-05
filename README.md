@@ -1,16 +1,11 @@
-# Spicetify Creator
+# No ᵣussian Music
+Automatically skip ᵣussian content in Spotify
 
-Spicetify Creator is a tool to compile modern Typescript/Javascript code to Spicetify extensions and custom apps.
-
-## Features
-- Typescript and React syntax
-- Import node packages
-- CSS/SCSS with PostCSS support
-- Extremely fast compile time with esbuild.
-- Plugins
-
-## Docs
-Check out [Spicetify's docs](https://spicetify.app/docs/development/spicetify-creator/the-basics)!
+## How it works
+No ᵣussian Music skips songs if:
+- the song name has one of the following letters in it: ["э", "ё", "ъ", "ы"]
+- one of the artists' name's has one of the following letters in it: ["э", "ё", "ъ", "ы"]
+- the song is marked as sang in russian language by spotify
 
 ## Made with Spicetify Creator
 - https://github.com/spicetify/spicetify-creator
