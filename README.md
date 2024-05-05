@@ -3,10 +3,10 @@ Automatically skip ᵣussian content in Spotify
 
 ## How it works
 No ᵣussian Music skips songs if:
-[x] the song name has one of the following letters in it: ["э", "ё", "ъ", "ы"]
-[x] one of the artists' name's has one of the following letters in it: ["э", "ё", "ъ", "ы"]
-[x] the song is marked as sang in russian language by spotify
-[] one of the artist's bios feature one of the bad words (["россия", "россии", "русский", "русская"]) or one of the bad letters
+- [x] the song name has one of the following letters in it: ["э", "ё", "ъ", "ы"]
+- [x] one of the artists' name's has one of the following letters in it: ["э", "ё", "ъ", "ы"]
+- [x] the song is marked as sang in russian language by spotify
+- [] one of the artist's bios feature one of the bad words (["россия", "россии", "русский", "русская"]) or one of the bad letters
 
 ### Installation
 Notes:
