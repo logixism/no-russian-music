@@ -9,6 +9,11 @@ function hasBadLetter(text: string) {
   return badLetters.some((ltr) => text.toLowerCase().includes(ltr));
 }
 
+function hasBadWord(text: string) {
+  if (!text) return false;
+  return badWords.some((wrd) => text.toLowerCase().includes(wrd));
+}
+
 function base62ToBase16(base62: string) {
   const base62Chars =
     "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -76,13 +81,14 @@ async function main() {
       skipReasons.push("bad letter in track name");
     }
 
-    // check for bad letters in artist biography
+    // check for bad letters or words in artist biography
     if (
       trackArtists?.some((artist) =>
         hasBadLetter(artist.profile.biography.text)
-      )
+      ) ||
+      trackArtists?.some((artist) => hasBadWord(artist.profile.biography.text))
     ) {
-      skipReasons.push("bad letter in biography");
+      skipReasons.push("bad letter/word in biography");
     }
 
     // check for bad letters in artist name
