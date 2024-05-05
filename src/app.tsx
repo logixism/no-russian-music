@@ -1,8 +1,11 @@
+const { queryNpvArtist } = Spicetify.GraphQL.Definitions;
+
 const badLanguages = ["ru"];
 const badLetters = ["э", "ё", "ъ", "ы"];
 const badWords = ["россия", "россии", "русский", "русская"];
 
 function hasBadLetter(text: string) {
+  if (!text) return false;
   return badLetters.some((ltr) => text.toLowerCase().includes(ltr));
 }
 
@@ -39,6 +42,17 @@ async function getDetailedTrackInfo(uri: string) {
   );
 }
 
+async function getDetailedArtistInfo(trackUri: string, artistUri: string) {
+  return (
+    await Spicetify.GraphQL.Request(queryNpvArtist, {
+      trackUri: trackUri,
+      artistUri: artistUri,
+      enableRelatedVideos: false,
+      enableCredits: true,
+    })
+  ).data.artistUnion;
+}
+
 async function main() {
   while (!Spicetify?.showNotification) {
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -49,28 +63,47 @@ async function main() {
   player.addEventListener("songchange", async () => {
     const trackData = player.data.item;
     const trackName = trackData.name;
-    const trackArtists = trackData.artists;
+    let trackArtists = [];
 
-    var languages;
-    try {
-      languages = (await getDetailedTrackInfo(trackData.uri))
-        .language_of_performance;
-    } catch (e) {
-      languages = [];
+    for (const artist of trackData.artists) {
+      trackArtists.push(await getDetailedArtistInfo(trackData.uri, artist.uri));
     }
 
+    let skipReasons = [];
+
+    // check for bad letters in track name
+    if (hasBadLetter(trackName)) {
+      skipReasons.push("bad letter in track name");
+    }
+
+    // check for bad letters in artist biography
     if (
-      hasBadLetter(trackName) ||
-      trackArtists?.some((artist) => hasBadLetter(artist.name)) ||
-      languages.some((lang: string) => badLanguages.includes(lang))
+      trackArtists?.some((artist) =>
+        hasBadLetter(artist.profile.biography.text)
+      )
     ) {
+      skipReasons.push("bad letter in biography");
+    }
+
+    // check for bad letters in artist name
+    if (trackArtists?.some((artist) => hasBadLetter(artist.profile.name))) {
+      skipReasons.push("bad letter in artist name");
+    }
+
+    // check for bad song language
+    try {
+      const langs = (await getDetailedTrackInfo(trackData.uri))
+        .language_of_performance;
+
+      if (langs.some((lang: string) => badLanguages.includes(lang)))
+        skipReasons.push("bad language");
+    } catch (e) {}
+
+    // alert the user if the song was skipped
+    if (skipReasons.length > 0) {
       player.next();
       Spicetify.showNotification(
-        `Skipped ${trackName} by ${
-          trackArtists
-            ? trackArtists.map((artist) => artist.name).join(", ")
-            : "unknown artist"
-        }`
+        `Skipped ${trackName}, reason: ${skipReasons.join(", ")}`
       );
     }
   });
